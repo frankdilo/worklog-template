@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+TODAY="$(date +%Y-%m-%d-%A)"
+LOG_FILE="log/${TODAY}.md"
+
+if [[ ! -f "$LOG_FILE" ]]; then
+  echo "ERROR: Missing log file for today: ${LOG_FILE}" >&2
+  exit 1
+fi
+
+WORKDIR="$(mktemp -d -t wlcopy)"
+HTML_FILE="${WORKDIR}/entry.html"
+RTF_FILE="${WORKDIR}/entry.rtf"
+TEXT_FILE="${WORKDIR}/entry.txt"
+
+cleanup() {
+  rm -rf "${WORKDIR}"
+}
+trap cleanup EXIT
+
+# Insert extra spacing before bold section headers so rich text looks spaced out
+sed 's/^\*\*/\
+**/g' "${LOG_FILE}" | pandoc -f markdown -t html > "${HTML_FILE}"
+
+# Generate both RTF (for Notes/Pages/etc) and plain UTF-8 text (for Slack)
+textutil -inputencoding UTF-8 -format html -convert rtf -stdin < "${HTML_FILE}" -stdout > "${RTF_FILE}"
+textutil -inputencoding UTF-8 -format html -convert txt -stdin < "${HTML_FILE}" -stdout > "${TEXT_FILE}"
+
+PLAIN_PATH="${TEXT_FILE}" RTF_PATH="${RTF_FILE}" swift - <<'SWIFT'
+import AppKit
+import Foundation
+
+enum PasteboardError: Error {
+  case missingEnvironment
+}
+
+let env = ProcessInfo.processInfo.environment
+
+guard
+  let plainPath = env["PLAIN_PATH"],
+  let rtfPath = env["RTF_PATH"]
+else {
+  throw PasteboardError.missingEnvironment
+}
+
+let plain = try String(contentsOfFile: plainPath, encoding: .utf8)
+let rtfData = try Data(contentsOf: URL(fileURLWithPath: rtfPath))
+
+let pasteboard = NSPasteboard.general
+pasteboard.clearContents()
+pasteboard.setString(plain, forType: .string)
+pasteboard.setData(rtfData, forType: .rtf)
+SWIFT
+
+echo "Copied ${LOG_FILE} to clipboard as UTF-8 text + RTF."

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+TODAY="$(date +%Y-%m-%d-%A)"
+LOG_FILE="log/${TODAY}.md"
+
+if [[ ! -f "$LOG_FILE" ]]; then
+  echo "ERROR: Missing log file for today: ${LOG_FILE}" >&2
+  exit 1
+fi
+
+subl "$LOG_FILE"
