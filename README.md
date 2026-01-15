@@ -18,6 +18,15 @@ A lightweight work log system: one markdown file per day, plus optional summarie
 
 See the sample files in `log/` for the expected format.
 
+## Claude commands
+
+This repo includes custom Claude commands in `.claude/commands`:
+
+- `/start` - Start a work log session.
+- `/summary-checkpoint` - Capture a checkpoint summary.
+- `/preview` - Preview the current log output.
+- `/polish` - Clean up wording and formatting.
+
 ## Create a new repo from this template
 
 Use GitHub's "Use this template" button on the repo page, or run:
