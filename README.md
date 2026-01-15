@@ -9,9 +9,12 @@ A lightweight work log system: one markdown file per day, plus optional summarie
 
 ## Daily flow
 
-1. Create or open today's log file in `log/`.
-2. Add sections using `**Section Name**` and bullet points.
-3. Keep entries short and in past tense.
+1. Run Claude Code in this repo.
+2. Type `/start`.
+3. Start writing what you are doing in the chat; logs will populate automatically.
+4. (Optional) Open today's log file in `log/` to review or edit.
+5. Add sections using `**Section Name**` and bullet points.
+6. Keep entries short and in past tense.
 
 See the sample files in `log/` for the expected format.
 
@@ -24,17 +27,6 @@ gh repo create your-repo-name --template frankdilo/worklog-template --private
 ```
 
 Then clone your new repo and start logging.
-
-## After you clone
-
-If you want to use this as a fresh repo (without the template git history):
-
-```bash
-rm -rf .git
-git init
-```
-
-Then add your own remote and make your first commit.
 
 ## Helper scripts (optional)
 
