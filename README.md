@@ -15,6 +15,16 @@ A lightweight work log system: one markdown file per day, plus optional summarie
 
 See the sample files in `log/` for the expected format.
 
+## Create a new repo from this template
+
+Use GitHub's "Use this template" button on the repo page, or run:
+
+```bash
+gh repo create your-repo-name --template frankdilo/worklog-template --private
+```
+
+Then clone your new repo and start logging.
+
 ## After you clone
 
 If you want to use this as a fresh repo (without the template git history):
